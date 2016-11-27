@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Core;
 
-namespace RequestHandlers
+namespace API.Core
 {
     public class ResponseGenerator : IResponseGenerator
     {

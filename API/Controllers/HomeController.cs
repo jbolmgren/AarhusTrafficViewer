@@ -1,6 +1,6 @@
 ﻿using System.Web.Http;
 
-namespace WebSite.Controllers
+namespace API.Controllers
 {
     [RoutePrefix("api")]
     public class HomeController : ApiController

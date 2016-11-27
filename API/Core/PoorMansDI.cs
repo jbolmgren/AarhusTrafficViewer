@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Dispatcher;
 
-namespace WebSite.Core
+namespace API.Core
 {
     public class PoorMansDI : IHttpControllerActivator
     {

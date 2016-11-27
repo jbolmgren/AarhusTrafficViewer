@@ -1,9 +1,8 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Dispatcher;
 using AarhusDataAccessImpl;
-using RequestHandlers;
-using WebSite.Controllers;
-using WebSite.Core;
+using API.Controllers;
+using API.Core;
 
 namespace WebSite
 {

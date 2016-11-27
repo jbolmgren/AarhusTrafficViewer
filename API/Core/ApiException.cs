@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace RequestHandlers
+namespace API.Core
 {
     public class ApiException : Exception
     {

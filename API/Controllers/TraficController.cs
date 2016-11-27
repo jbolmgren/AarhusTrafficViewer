@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
-using API;
 using Core;
 using RequestHandlers;
 
-namespace WebSite.Controllers
+namespace API.Controllers
 {
     [RoutePrefix("api/trafic")]
     public class TraficController : ApiController
