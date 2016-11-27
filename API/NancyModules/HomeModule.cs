@@ -1,4 +1,4 @@
-﻿namespace API.Site.Routes
+﻿namespace API.NancyModules
 {
     public class HomeModule : Nancy.NancyModule
     {
