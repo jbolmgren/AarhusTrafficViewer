@@ -39,10 +39,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="API, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Bin\API.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -120,8 +116,6 @@
     <Content Include="Scripts\jquery-1.9.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\ApiException.cs" />
-    <Compile Include="App_Start\ResponseGenerator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\DependencyInjectionConfig.cs" />
     <Compile Include="Global.asax.cs">
@@ -148,8 +142,12 @@
       <Project>{62D1F31A-D35E-4756-8410-25AE6FB594BD}</Project>
       <Name>AarhusDataAccessImpl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\API\API.csproj">
+      <Project>{5a7f6c67-6eed-4b75-a619-a412ddffa0a0}</Project>
+      <Name>API</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{1B051242-DC5D-4138-84AE-8EBF49F9D762}</Project>
+      <Project>{1b051242-dc5d-4138-84ae-8ebf49f9d762}</Project>
       <Name>Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\RequestHandlers\RequestHandlers.csproj">

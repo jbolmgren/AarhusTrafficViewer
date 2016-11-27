@@ -41,7 +41,7 @@
   <ItemGroup>
     <Compile Include="IRequestHandler.cs" />
     <Compile Include="IResponseGenerator.cs" />
-    <Compile Include="ITraficDataReader.cs" />
+    <Compile Include="DataAccess\ITraficDataReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidationResult.cs" />
   </ItemGroup>
