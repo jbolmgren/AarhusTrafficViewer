@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{1AF5CFC7-5E51-47FB-BBB6-158A54F5CB35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSite", "API\WebSite.csproj", "{1AF5CFC7-5E51-47FB-BBB6-158A54F5CB35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{1B051242-DC5D-4138-84AE-8EBF49F9D762}"
 EndProject

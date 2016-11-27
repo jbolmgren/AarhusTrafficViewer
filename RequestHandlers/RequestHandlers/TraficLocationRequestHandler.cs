@@ -5,9 +5,9 @@ using Core;
 
 namespace RequestHandlers
 {
-    public class TrafficLocationRequestHandler : IRequestHandler<TrafficLocationResponse>
+    public class TraficLocationRequestHandler : IRequestHandler<TraficLocationResponse>
     {
-        public TrafficLocationRequestHandler(ITraficDataReader traficDataReader, TrafficLocationRequestData data)
+        public TraficLocationRequestHandler(ITraficDataReader traficDataReader, TraficLocationRequestData data)
         {
             throw new System.NotImplementedException();
         }
@@ -17,17 +17,17 @@ namespace RequestHandlers
             throw new NotImplementedException();
         }
 
-        public Task<TrafficLocationResponse> Execute()
+        public Task<TraficLocationResponse> Execute()
         {
             throw new NotImplementedException();
         }
     }
 
-    public class TrafficLocationResponse
+    public class TraficLocationResponse
     {
     }
     
-    public class TrafficLocationRequestData
+    public class TraficLocationRequestData
     {
     }
 }

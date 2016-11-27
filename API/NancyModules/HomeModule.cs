@@ -1,4 +1,4 @@
-﻿namespace API.NancyModules
+﻿namespace WebSite.NancyModules
 {
     public class HomeModule : Nancy.NancyModule
     {

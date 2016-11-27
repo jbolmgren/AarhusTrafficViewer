@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Web.Http.Controllers;
 
-namespace API.Core
+namespace WebSite.Core
 {
     public class TypeInstanciator
     {

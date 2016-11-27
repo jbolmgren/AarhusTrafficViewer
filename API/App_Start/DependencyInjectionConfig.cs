@@ -1,11 +1,11 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Dispatcher;
 using AarhusDataAccessImpl;
-using API.Controllers;
-using API.Core;
 using RequestHandlers;
+using WebSite.Controllers;
+using WebSite.Core;
 
-namespace API
+namespace WebSite
 {
     public static class DependencyInjectionConfig
     {

@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
+using API;
 using Core;
 using RequestHandlers;
 
-namespace API.Controllers
+namespace WebSite.Controllers
 {
-    [RoutePrefix("api/traffic")]
+    [RoutePrefix("api/trafic")]
     public class TraficController : ApiController
     {
         private readonly IResponseGenerator _generator;
@@ -19,9 +20,9 @@ namespace API.Controllers
 
         [Route("location")]
         [HttpGet]
-        public async Task<TrafficLocationResponse> LoadLocation(TrafficLocationRequestData data)
+        public async Task<TraficLocationResponse> LoadLocation(TraficLocationRequestData data)
         {
-            return await _generator.Create(new TrafficLocationRequestHandler(_traficDataReader, data));
+            return await _generator.Create(new TraficLocationRequestHandler(_traficDataReader, data));
         }
     }
 }
