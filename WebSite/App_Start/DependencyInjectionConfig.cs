@@ -11,7 +11,7 @@ namespace WebSite
         public static void Register(HttpConfiguration httpConfiguration)
         {
             var typeInstanciator = new TypeInstanciator();
-            typeInstanciator.AddCreator(() => new TraficController(new ResponseGenerator(), new TraficDataReader()));
+            typeInstanciator.AddCreator(() => new TraficController(new ResponseGenerator(), new TraficDataReaderImpl(new HttpJsonClientImpl(new JsonConverterImpl()))));
             httpConfiguration.Services.Replace(typeof (IHttpControllerActivator), new PoorMansDI(typeInstanciator));
         }
     }

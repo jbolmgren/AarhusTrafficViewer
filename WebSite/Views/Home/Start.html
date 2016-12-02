@@ -2,7 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title></title>
-        <link rel="stylesheet" href="Content/bootstrap.css"/>
+        <link rel="stylesheet" href="~/Content/bootstrap.css"/>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <script language="javascript" type="text/javascript" src="~/Scripts/jquery-3.1.1.min.js"></script>
+        <script language="javascript" type="text/javascript" src="~/Scripts/Home/GoogleMap.js"></script>
     </head>
     <body>
         <div class="col-md-2"></div>
@@ -11,6 +15,8 @@
                 <div class="container">
                     <h1>Hallo My World</h1>
                     <p>@Model.Text</p>
+                    <div id="map" style="height: 600px;"></div>
+                    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo&callback=initMap"></script>
                 </div>
             </div>
         </div>

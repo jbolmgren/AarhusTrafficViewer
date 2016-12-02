@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{1B051242-DC5D-4138-84AE-8EBF49F9D762}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSite", "WebSite\WebSite.csproj", "{1AF5CFC7-5E51-47FB-BBB6-158A54F5CB35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{5A7F6C67-6EED-4B75-A619-A412DDFFA0A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AarhusDataAccessImplTest", "AarhusDataAccessImplTest\AarhusDataAccessImplTest.csproj", "{EDAFBD01-DA32-42EB-A65C-7155F68DF45F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{5A7F6C67-6EED-4B75-A619-A412DDFFA0A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A7F6C67-6EED-4B75-A619-A412DDFFA0A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A7F6C67-6EED-4B75-A619-A412DDFFA0A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDAFBD01-DA32-42EB-A65C-7155F68DF45F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDAFBD01-DA32-42EB-A65C-7155F68DF45F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDAFBD01-DA32-42EB-A65C-7155F68DF45F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDAFBD01-DA32-42EB-A65C-7155F68DF45F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

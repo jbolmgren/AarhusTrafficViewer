@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Http;
 using Core;
+using Core.DataAccess;
 using RequestHandlers;
 
 namespace API.Controllers
@@ -17,9 +18,9 @@ namespace API.Controllers
             _traficDataReader = traficDataReader;
         }
 
-        [Route("location")]
+        [Route("")]
         [HttpGet]
-        public async Task<TraficLocationResponse> LoadLocation(TraficLocationRequestData data)
+        public async Task<TraficLocationResponse> LoadLocation([FromUri] TraficLocationRequestData data)
         {
             return await _generator.Create(new TraficLocationRequestHandler(_traficDataReader, data));
         }

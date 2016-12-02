@@ -1,33 +1,62 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using API;
 using Core;
+using Core.DataAccess;
 
 namespace RequestHandlers
 {
     public class TraficLocationRequestHandler : IRequestHandler<TraficLocationResponse>
     {
+        private readonly TraficLocationRequestData _data;
+        private readonly ITraficDataReader _traficDataReader;
+
         public TraficLocationRequestHandler(ITraficDataReader traficDataReader, TraficLocationRequestData data)
         {
-            throw new System.NotImplementedException();
+            _traficDataReader = traficDataReader;
+            _data = data;
         }
 
         public ValidationResult ValidateInput()
         {
-            throw new NotImplementedException();
+            if (_data.Radius > 600)
+                return new ValidationResult("Invalid Radius. Radius is not allowed to be greater than 600");
+            if (_data.Radius <= 0)
+                return new ValidationResult("Invalid Radius. Radius is not allowed to be less or equal to 0");
+
+            return new ValidationResult();
         }
 
-        public Task<TraficLocationResponse> Execute()
+        public async Task<TraficLocationResponse> Execute()
         {
-            throw new NotImplementedException();
+            var traficInfos = await _traficDataReader.SearchForTrafic(_data.Lat, _data.Lng, _data.Radius);
+            return new TraficLocationResponse
+                   {
+                       TraficPositions = traficInfos.Select(ConvertToPosition).ToList(),
+                       Count = traficInfos.Count
+                   };
+        }
+
+        private TraficPosition ConvertToPosition(TraficInfo traficInfo)
+        {
+            return new TraficPosition();
         }
     }
 
     public class TraficLocationResponse
     {
+        public IList<TraficPosition> TraficPositions { get; set; }
+        public int Count { get; set; }
     }
-    
+
+    public class TraficPosition
+    {
+    }
+
     public class TraficLocationRequestData
     {
+        public double Lat { get; set; }
+        public double Lng { get; set; }
+        public int Radius { get; set; }
     }
 }
