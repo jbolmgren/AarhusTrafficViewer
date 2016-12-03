@@ -157,6 +157,10 @@
       <Project>{1b051242-dc5d-4138-84ae-8ebf49f9d762}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Lib\AutoMapper\AutoMapper.csproj">
+      <Project>{8506079B-C25B-4248-9D63-A42092EFD8D4}</Project>
+      <Name>AutoMapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RequestHandlers\RequestHandlers.csproj">
       <Project>{99224D72-3579-493E-87C3-8485088406EE}</Project>
       <Name>RequestHandlers</Name>

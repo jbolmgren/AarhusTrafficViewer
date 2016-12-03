@@ -17,7 +17,7 @@ namespace AarhusDataAccessImplTest
             var httpJsonClientStub = new HttpJsonClientStub();
             var reportId = 1;
             var timeStamp = DateTime.Now;
-            httpJsonClientStub.Add(CreateTraficTestData(new TraficRecord(){Report_Id = reportId, TimeStamp = timeStamp}));
+            httpJsonClientStub.Add(CreateTraficTestData(new TraficRecord(){Report_Id = reportId, TimeStamp = timeStamp, Status = TraficRecord.StatusOk}));
             httpJsonClientStub.Add(CreateFixpointTestData(new FixPointRecord(){Report_Id = reportId, Point_1_lat = 9, Point_1_lng = 9, Point_2_lat = 22, Point_2_lng = 22}));
 
             var dataReader = new TraficDataReaderImpl(httpJsonClientStub);

@@ -50,6 +50,33 @@ function updateMapCenter(map, pos) {
     marker.addListener('mouseup', function() { updatePosition(map, marker.position); });
 }
 
+function updateMapWithTraficInfo(map, traficInfo) {
+    var directionsService = new google.maps.DirectionsService;
+
+    for (var index in traficInfo) {
+        var info = traficInfo[index];
+        directionsService.route({
+            origin: {
+                lat: info.StartPosition.Latitude,
+                lng: info.StartPosition.Longitude
+            },
+            destination: {
+                lat: info.EndPosition.Latitude,
+                lng: info.EndPosition.Longitude
+            },
+            travelMode: 'DRIVING'
+        }, function (response, status) {
+            if (status === 'OK') {
+                var directionsDisplay = new google.maps.DirectionsRenderer;
+                directionsDisplay.setMap(map);
+                directionsDisplay.setDirections(response);
+            } else {
+                window.alert('Directions request failed due to ' + status);
+            }
+        });
+    }
+}
+
 
 function updatePosition(map, pos) {
     var data = { Lat: pos.lat(), Lng: pos.lng(), Radius: 400 };
@@ -59,8 +86,9 @@ function updatePosition(map, pos) {
         type:"GET",
         contentType:"application/json; charset=utf-8",
         dataType:"json",
-        success: function(data){
-            alert(data);
+        success: function(data) {
+            if (data.TraficPositions)
+                updateMapWithTraficInfo(map, data.TraficPositions);
         }
     })
 }

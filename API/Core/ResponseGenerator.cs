@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using API.Core;
 using Core;
@@ -13,7 +14,15 @@ namespace API.Core
             var validationResult = requestHandler.ValidateInput();
             if (!validationResult.IsValid)
                 throw new ApiException(HttpStatusCode.BadRequest, validationResult.Message);
-            return await requestHandler.Execute();
+            try
+            {
+                return await requestHandler.Execute();
+            }
+            catch (Exception e)
+            {
+                throw new ApiException(HttpStatusCode.InternalServerError, "Houston, We have a problem! :'(");
+            }
+            
         }
 
     }
