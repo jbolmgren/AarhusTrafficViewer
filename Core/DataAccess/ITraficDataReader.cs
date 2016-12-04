@@ -6,7 +6,7 @@ namespace Core.DataAccess
 {
     public interface ITraficDataReader
     {
-        Task<IList<TraficInfo>> SearchForTrafic(double lat, double lng, int radius);
+        Task<IList<TraficInfo>> SearchForTrafic(double lat, double lng, int radiusInMeters);
     }
 
     public class TraficInfo

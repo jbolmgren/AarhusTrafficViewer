@@ -1,102 +1,186 @@
 ﻿function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 56.15653, lng: 10.20747 },
-        zoom: 15
-    });
+    var center = { lat: 56.15653, lng: 10.20747 };
+    var mapComponentFactory = new GoogleMapComponentFactory(document.getElementById('map'), center);
+    var serviceCaller = new ServiceCaller();
+    new TraficInfoMapRenderer(mapComponentFactory, serviceCaller).renderMap(center);
+}
 
-    var pos = map.getCenter();
 
-    updateMapCenter(map, pos);
+var MapState = function () {
+    this.removeHandles = [];
 
-    // Try HTML5 geolocation.
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-        }, function () {
-            handleLocationError(true, map, pos);
-        });
-    } else {
-        // Browser doesn't support Geolocation
-        handleLocationError(false, map, pos);
+    this.addRemoveHandle = function(handle) {
+        this.removeHandles.push(handle);
     }
-}
 
-function updateMapCenter(map, pos) {
-    map.setCenter(pos);
+    this.runRemoveHandles = function () {
+        for (var index in this.removeHandles) {
+            this.removeHandles[index].remove();
+        }
+        this.clear();
+    };
 
-    var marker = new google.maps.Marker({
-        map: map,
-        draggable: true,
-        animation: google.maps.Animation.DROP,
-        position: pos
-    });
+    this.clear = function() {
+        this.removeHandles = [];
+    };
+};
 
-    var circle = new google.maps.Circle({
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.6,
-        strokeWeight: 1,
-        fillColor: '#FF0000',
-        fillOpacity: 0.2,
-        map: map,
-        center: pos,
-        radius: 400
-    });
+var TraficInfoMapRenderer = function (mapComponentFactory, serviceCaller) {
+    this.state = new MapState();
+    this.defaultSearchRadius = 800;
+    this.mapComponentFactory = mapComponentFactory;
+    this.serviceCaller = serviceCaller;
 
-    marker.addListener('drag', function () { circle.setCenter(marker.position); });
-    marker.addListener('mouseup', function() { updatePosition(map, marker.position); });
-}
+    this.renderMap = function (pos) {
+        this.state.clear();
+        
+        var marker = mapComponentFactory.createMarker(pos, this.defaultSearchRadius);
+        var instance = this;
+        marker.addPositionListener(function (position) { instance.updatePosition(position); });
+    };
 
-function updateMapWithTraficInfo(map, traficInfo) {
-    var directionsService = new google.maps.DirectionsService;
+    this.updatePosition = function (pos) {
+        var query = { Lat: pos.lat(), Lng: pos.lng(), RadiusInMeters: this.defaultSearchRadius };
+        var instance = this;
+        this.serviceCaller.callTraficInfoService(query, function (traficData) { instance.updateMapWithTraficInfo(traficData); });
+    };
 
-    for (var index in traficInfo) {
-        var info = traficInfo[index];
-        directionsService.route({
-            origin: {
+    this.updateMapWithTraficInfo = function(traficInfo) {
+        this.state.runRemoveHandles();
+
+        var instance = this;
+
+        for (var index in traficInfo) {
+            var info = traficInfo[index];
+            var startPos = {
                 lat: info.StartPosition.Latitude,
                 lng: info.StartPosition.Longitude
-            },
-            destination: {
+            };
+            var endPos = {
                 lat: info.EndPosition.Latitude,
                 lng: info.EndPosition.Longitude
-            },
+            };
+            this.serviceCaller.callRouteService(startPos, endPos, function(response) { instance.createRouteOnMap(startPos, info, response); });
+        }
+    };
+
+    this.createRouteOnMap = function(infoWindowPos, info, response) {
+        var name = "";
+        if (response.routes && response.routes.length > 0)
+            name = "<b>" + response.routes[0].summary + "</b>";
+
+        var infoText = name + "<br />";
+        infoText += "Car count:" + info.CarCount + ", ";
+        infoText += "Average Speed: " + info.AverageSpeed + "<br />";
+        infoText += "Last updated: " + info.RecordTime;
+
+        var windowRemoveHandle = this.mapComponentFactory.createInfoWindow(infoText, infoWindowPos);
+        this.state.addRemoveHandle(windowRemoveHandle);
+
+        var displayRemoveHandle = this.mapComponentFactory.createDirectionMarking(response);
+        this.state.addRemoveHandle(displayRemoveHandle);
+    }
+
+}
+
+var ServiceCaller = function () {
+
+    this.callTraficInfoService = function(query, callback) {
+        var apiurl = 'api/trafic/?' + $.param(query);
+        $.ajax({
+            url: apiurl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(data) {
+                if (data.TraficPositions)
+                    callback(data.TraficPositions);
+            }
+        });
+    };
+
+    this.callRouteService = function (startPos, endPos, callback) {
+        var directionsService = new google.maps.DirectionsService();
+        directionsService.route({
+            origin: startPos,
+            destination: endPos,
             travelMode: 'DRIVING'
         }, function (response, status) {
             if (status === 'OK') {
-                var directionsDisplay = new google.maps.DirectionsRenderer;
-                directionsDisplay.setMap(map);
-                directionsDisplay.setDirections(response);
+                callback(response);
             } else {
                 window.alert('Directions request failed due to ' + status);
             }
         });
+    };
+}
+
+var GoogleMapComponentFactory = function(elm, position) {
+    this.map = new google.maps.Map(elm, {
+        center: position,
+        zoom: 15
+    });
+
+    this.getMap = function() {
+        return this.map;
+    };
+
+    this.createMarker = function (pos, radiusInMeters) {
+        var marker = new google.maps.Marker({
+            map: this.getMap(),
+            draggable: true,
+            animation: google.maps.Animation.DROP,
+            position: pos
+        });
+        
+        var circle = this.createCircle(pos, radiusInMeters);
+        marker.addListener('drag', function () { circle.setCenter(marker.position); });
+
+        return {
+            addPositionListener : function(callback) {
+                marker.addListener('mouseup', function () { callback(marker.position); });
+            }
+        };
+    };
+
+    this.createCircle = function(pos, radius) {
+        return new google.maps.Circle({
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.6,
+            strokeWeight: 1,
+            fillColor: '#FF0000',
+            fillOpacity: 0.2,
+            map: this.getMap(),
+            center: pos,
+            radius: radius
+        });
+    };
+
+    this.createInfoWindow = function(infoText, infoWindowPos) {
+        var win = new google.maps.InfoWindow({
+            map: this.getMap(),
+            content: infoText,
+            position: infoWindowPos
+        });
+        return {
+            remove : function() {
+                win.close();
+            }
+        };
+    };
+
+    this.createDirectionMarking = function(response) {
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            draggable: false,
+            map: this.getMap(),
+            suppressMarkers: true,
+            preserveViewport: true
+        });
+        directionsDisplay.setDirections(response);
+        return {
+            remove : function() {
+                directionsDisplay.setMap(null);
+            }
+        };
     }
-}
-
-
-function updatePosition(map, pos) {
-    var data = { Lat: pos.lat(), Lng: pos.lng(), Radius: 400 };
-    var apiurl = 'api/trafic/?' + $.param(data);
-    $.ajax({
-        url:apiurl,
-        type:"GET",
-        contentType:"application/json; charset=utf-8",
-        dataType:"json",
-        success: function(data) {
-            if (data.TraficPositions)
-                updateMapWithTraficInfo(map, data.TraficPositions);
-        }
-    })
-}
-
-function handleLocationError(browserHasGeolocation, map, pos) {
-    var infoWindow = new google.maps.InfoWindow({ map: map });
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-                          'Error: The Geolocation service failed.' :
-                          'Error: Your browser doesn\'t support geolocation.');
-}
+};

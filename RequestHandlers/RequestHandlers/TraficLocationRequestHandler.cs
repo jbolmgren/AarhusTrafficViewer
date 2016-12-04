@@ -23,9 +23,9 @@ namespace RequestHandlers.RequestHandlers
 
         public ValidationResult ValidateInput()
         {
-            if (_data.Radius > 600)
+            if (_data.RadiusInMeters > 1000)
                 return new ValidationResult("Invalid Radius. Radius is not allowed to be greater than 600");
-            if (_data.Radius <= 0)
+            if (_data.RadiusInMeters <= 0)
                 return new ValidationResult("Invalid Radius. Radius is not allowed to be less or equal to 0");
 
             return new ValidationResult();
@@ -33,7 +33,7 @@ namespace RequestHandlers.RequestHandlers
 
         public async Task<TraficLocationResponse> Execute()
         {
-            var traficInfos = await _traficDataReader.SearchForTrafic(_data.Lat, _data.Lng, _data.Radius);
+            var traficInfos = await _traficDataReader.SearchForTrafic(_data.Lat, _data.Lng, _data.RadiusInMeters);
             _mapper.AddProfile(new TraficInfoMappingProfile());
             return new TraficLocationResponse
                    {
@@ -78,6 +78,6 @@ namespace RequestHandlers.RequestHandlers
     {
         public double Lat { get; set; }
         public double Lng { get; set; }
-        public int Radius { get; set; }
+        public int RadiusInMeters { get; set; }
     }
 }
