@@ -6,14 +6,13 @@
 }
 
 
-var MapState = function () {
+var MapState = function() {
     this.removeHandles = [];
 
     this.addRemoveHandle = function(handle) {
         this.removeHandles.push(handle);
-    }
-
-    this.runRemoveHandles = function () {
+    };
+    this.runRemoveHandles = function() {
         for (var index in this.removeHandles) {
             this.removeHandles[index].remove();
         }
@@ -25,24 +24,24 @@ var MapState = function () {
     };
 };
 
-var TraficInfoMapRenderer = function (mapComponentFactory, serviceCaller) {
+var TraficInfoMapRenderer = function(mapComponentFactory, serviceCaller) {
     this.state = new MapState();
     this.defaultSearchRadius = 800;
     this.mapComponentFactory = mapComponentFactory;
     this.serviceCaller = serviceCaller;
 
-    this.renderMap = function (pos) {
+    this.renderMap = function(pos) {
         this.state.clear();
-        
+
         var marker = mapComponentFactory.createMarker(pos, this.defaultSearchRadius);
         var instance = this;
-        marker.addPositionListener(function (position) { instance.updatePosition(position); });
+        marker.addPositionListener(function(position) { instance.updatePosition(position); });
     };
 
-    this.updatePosition = function (pos) {
+    this.updatePosition = function(pos) {
         var query = { Lat: pos.lat(), Lng: pos.lng(), RadiusInMeters: this.defaultSearchRadius };
         var instance = this;
-        this.serviceCaller.callTraficInfoService(query, function (traficData) { instance.updateMapWithTraficInfo(traficData); });
+        this.serviceCaller.callTraficInfoService(query, function(traficData) { instance.updateMapWithTraficInfo(traficData); });
     };
 
     this.updateMapWithTraficInfo = function(traficInfo) {
@@ -79,11 +78,9 @@ var TraficInfoMapRenderer = function (mapComponentFactory, serviceCaller) {
 
         var displayRemoveHandle = this.mapComponentFactory.createDirectionMarking(response);
         this.state.addRemoveHandle(displayRemoveHandle);
-    }
-
-}
-
-var ServiceCaller = function () {
+    };
+};
+var ServiceCaller = function() {
 
     this.callTraficInfoService = function(query, callback) {
         var apiurl = 'api/trafic/?' + $.param(query);
@@ -99,13 +96,13 @@ var ServiceCaller = function () {
         });
     };
 
-    this.callRouteService = function (startPos, endPos, callback) {
+    this.callRouteService = function(startPos, endPos, callback) {
         var directionsService = new google.maps.DirectionsService();
         directionsService.route({
             origin: startPos,
             destination: endPos,
             travelMode: 'DRIVING'
-        }, function (response, status) {
+        }, function(response, status) {
             if (status === 'OK') {
                 callback(response);
             } else {
@@ -113,8 +110,7 @@ var ServiceCaller = function () {
             }
         });
     };
-}
-
+};
 var GoogleMapComponentFactory = function(elm, position) {
     this.map = new google.maps.Map(elm, {
         center: position,
@@ -125,20 +121,20 @@ var GoogleMapComponentFactory = function(elm, position) {
         return this.map;
     };
 
-    this.createMarker = function (pos, radiusInMeters) {
+    this.createMarker = function(pos, radiusInMeters) {
         var marker = new google.maps.Marker({
             map: this.getMap(),
             draggable: true,
             animation: google.maps.Animation.DROP,
             position: pos
         });
-        
+
         var circle = this.createCircle(pos, radiusInMeters);
-        marker.addListener('drag', function () { circle.setCenter(marker.position); });
+        marker.addListener('drag', function() { circle.setCenter(marker.position); });
 
         return {
-            addPositionListener : function(callback) {
-                marker.addListener('mouseup', function () { callback(marker.position); });
+            addPositionListener: function(callback) {
+                marker.addListener('mouseup', function() { callback(marker.position); });
             }
         };
     };
@@ -163,7 +159,7 @@ var GoogleMapComponentFactory = function(elm, position) {
             position: infoWindowPos
         });
         return {
-            remove : function() {
+            remove: function() {
                 win.close();
             }
         };
@@ -178,9 +174,9 @@ var GoogleMapComponentFactory = function(elm, position) {
         });
         directionsDisplay.setDirections(response);
         return {
-            remove : function() {
+            remove: function() {
                 directionsDisplay.setMap(null);
             }
         };
-    }
+    };
 };
