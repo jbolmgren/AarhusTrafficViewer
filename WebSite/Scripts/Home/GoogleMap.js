@@ -1,6 +1,6 @@
 ﻿function initMap() {
     var center = { lat: 56.15653, lng: 10.20747 };
-    var mapComponentFactory = new GoogleMapComponentFactory(document.getElementById('map'), center);
+    var mapComponentFactory = new GoogleMapComponentFactory(document.getElementById('map'), center, document.getElementById("loading-icon").src);
     var serviceCaller = new ServiceCaller();
     new TraficInfoMapRenderer(mapComponentFactory, serviceCaller).renderMap(center);
 }
@@ -8,19 +8,42 @@
 
 var MapState = function() {
     this.removeHandles = [];
+    this.loadingListerners = [];
+    this.loadingCounter = 0;
 
     this.addRemoveHandle = function(handle) {
         this.removeHandles.push(handle);
     };
+
     this.runRemoveHandles = function() {
         for (var index in this.removeHandles) {
             this.removeHandles[index].remove();
         }
-        this.clear();
+        this.removeHandles = [];
     };
 
+    this.addLoadingDoneListener = function(listener) {
+        this.loadingListerners.push(listener);
+    };
+    this.increaseLoadingCounter = function() {
+        this.loadingCounter++;
+    };
+    this.decreaseLoadingCounter = function() {
+        this.loadingCounter--;
+        if (this.loadingCounter > 0)
+            return;
+        this.loadingCounter = 0;
+        this.fireDoneListeners();
+    };
+    this.fireDoneListeners = function() {
+        for (var i = 0; i < this.loadingListerners.length; i++) {
+            this.loadingListerners[i]();
+        }
+    };
     this.clear = function() {
         this.removeHandles = [];
+        this.loadingCounter = 0;
+        this.loadingListerners = [];
     };
 };
 
@@ -34,14 +57,26 @@ var TraficInfoMapRenderer = function(mapComponentFactory, serviceCaller) {
         this.state.clear();
 
         var marker = mapComponentFactory.createMarker(pos, this.defaultSearchRadius);
+        this.state.addLoadingDoneListener(function() { marker.setLoadingIcon(false); });
+
         var instance = this;
-        marker.addPositionListener(function(position) { instance.updatePosition(position); });
+        marker.addPositionListener(function(position) {
+            marker.setLoadingIcon(true);
+            instance.state.increaseLoadingCounter();
+            instance.updatePosition(position);
+            instance.state.decreaseLoadingCounter();
+        });
     };
 
     this.updatePosition = function(pos) {
         var query = { Lat: pos.lat(), Lng: pos.lng(), RadiusInMeters: this.defaultSearchRadius };
         var instance = this;
-        this.serviceCaller.callTraficInfoService(query, function(traficData) { instance.updateMapWithTraficInfo(traficData); });
+
+        this.state.increaseLoadingCounter();
+        this.serviceCaller.callTraficInfoService(query, function(traficData) {
+            instance.updateMapWithTraficInfo(traficData);
+            instance.state.decreaseLoadingCounter();
+        });
     };
 
     this.updateMapWithTraficInfo = function(traficInfo) {
@@ -59,7 +94,12 @@ var TraficInfoMapRenderer = function(mapComponentFactory, serviceCaller) {
                 lat: info.EndPosition.Latitude,
                 lng: info.EndPosition.Longitude
             };
-            this.serviceCaller.callRouteService(startPos, endPos, function(response) { instance.createRouteOnMap(startPos, info, response); });
+
+            this.state.increaseLoadingCounter();
+            this.serviceCaller.callRouteService(startPos, endPos, function(response) {
+                instance.createRouteOnMap(startPos, info, response);
+                instance.state.decreaseLoadingCounter();
+            });
         }
     };
 
@@ -111,11 +151,12 @@ var ServiceCaller = function() {
         });
     };
 };
-var GoogleMapComponentFactory = function(elm, position) {
+var GoogleMapComponentFactory = function(elm, position, loadingIconUrl) {
     this.map = new google.maps.Map(elm, {
         center: position,
         zoom: 15
     });
+    this.loadingIconUrl = loadingIconUrl;
 
     this.getMap = function() {
         return this.map;
@@ -132,7 +173,15 @@ var GoogleMapComponentFactory = function(elm, position) {
         var circle = this.createCircle(pos, radiusInMeters);
         marker.addListener('drag', function() { circle.setCenter(marker.position); });
 
+        var instance = this;
         return {
+            setLoadingIcon: function(enableIcon) {
+                if(enableIcon)
+                    marker.setIcon(instance.loadingIconUrl);
+                else
+                    marker.setIcon(null);
+
+            },
             addPositionListener: function(callback) {
                 marker.addListener('mouseup', function() { callback(marker.position); });
             }
