@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RequestHandlers", "RequestH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AarhusDataAccessImpl", "AarhusDataAccessImpl\AarhusDataAccessImpl.csproj", "{62D1F31A-D35E-4756-8410-25AE6FB594BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AarhusTrafficViewer", "WebSite\AarhusTrafficViewer.csproj", "{1AF5CFC7-5E51-47FB-BBB6-158A54F5CB35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSite", "WebSite\WebSite.csproj", "{1AF5CFC7-5E51-47FB-BBB6-158A54F5CB35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{5A7F6C67-6EED-4B75-A619-A412DDFFA0A0}"
 EndProject
