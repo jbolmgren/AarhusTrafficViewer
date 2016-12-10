@@ -21,7 +21,7 @@ namespace AarhusDataAccessImplTest
             httpJsonClientStub.Add(CreateFixpointTestData(new FixPointRecord(){Report_Id = reportId, Point_1_lat = 9, Point_1_lng = 9, Point_2_lat = 22, Point_2_lng = 22}));
 
             var dataReader = new TraficDataReaderImpl(httpJsonClientStub);
-            var traficInfos = dataReader.SearchForTrafic(10, 10, 2).Result;
+            var traficInfos = dataReader.SearchForTrafic(9, 9, 2000).Result;
             Assert.AreEqual(timeStamp, traficInfos.Single().RecordTime);
         }
 
