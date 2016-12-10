@@ -4,7 +4,6 @@ using Nancy.Owin;
 using Owin;
 using WebSite;
 
-[assembly: OwinStartup(typeof(Startup))]
 namespace WebSite
 {
     public class Startup
